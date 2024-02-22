@@ -11,33 +11,39 @@ namespace LightWeightFSM
         [SerializeField]
         private State _initialState;
         private State _currentState;
-        private List<Transition> transitions;
-        private List<State> states;
+        private Dictionary<State, List<Transition>> stateMap;
         private void Start()
         {
             _currentState = _initialState;
-            transitions= new List<Transition>();
-            states= new List<State>();
-            GetComponents(transitions);
-            Debug.Log(transitions.Count);
-            GetComponents(states);
-            Debug.Log(states.Count);
+            stateMap = new Dictionary<State, List<Transition>>();
+
+            foreach(Transform child in transform)
+            {
+                State s = child.GetComponent<State>();
+                if(s!=null)
+                {
+                    List<Transition> transitions = new List<Transition>();
+                    child.GetComponents<Transition>(transitions);
+                    stateMap.Add(s, transitions);
+                }
+            }
+
+            _currentState.OnEnter();
+            _currentState.Run();
         }
 
         private void Update()
         {
-            foreach(Transition tr in transitions)
+            List<Transition> transitions = stateMap[_currentState];
+            foreach(Transition s in transitions)
             {
-                if(_currentState.Equals(tr.fromState))
+                if(s.toTransition())
                 {
-                    if (tr.toTransition())
-                    {
-                        _currentState.Stop();
-                        _currentState.OnExit();
-                        _currentState= tr.toState;
-                        _currentState.Run();
-                        _currentState.OnEnter();
-                    }
+                    _currentState.Stop();
+                    _currentState.OnExit();
+                    _currentState = s.toState;
+                    _currentState.OnEnter();
+                    _currentState.Run();
                 }
             }
         }

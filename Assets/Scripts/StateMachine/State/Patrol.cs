@@ -15,28 +15,25 @@ namespace LightWeightFSM
         private Transform currentWaypoint;
         [SerializeField]
         private float patrolSpeed=5.0f;
-        private void Start()
-        {
-            currentWaypoint = waypoint1;
-        }
 
         public override void OnEnter()
         {
             base.OnEnter();
-            GetComponentInChildren<Animator>().SetTrigger("Walk");
+            currentWaypoint = waypoint1;
+            rootGameObj.GetComponentInChildren<Animator>().SetFloat("Move",patrolSpeed);
         }
 
         private void LateUpdate()
         {
-            if (transform.position == waypoint1.position)
+            if (rootGameObj.transform.position == waypoint1.position)
             {
                 currentWaypoint= waypoint2;
             }
-            else if (transform.position == waypoint2.position)
+            else if (rootGameObj.transform.position == waypoint2.position)
             {
                 currentWaypoint= waypoint1;
             }
-            transform.position = Vector3.MoveTowards(transform.position,currentWaypoint.position,Time.deltaTime*patrolSpeed);
+            rootGameObj.transform.position = Vector3.MoveTowards(rootGameObj.transform.position,currentWaypoint.position,Time.deltaTime*patrolSpeed);
         }
     }
 }

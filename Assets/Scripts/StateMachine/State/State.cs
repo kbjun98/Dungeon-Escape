@@ -7,11 +7,13 @@ namespace LightWeightFSM
 {
     public class State:MonoBehaviour
     {
+        protected GameObject rootGameObj;
         public float enterTime { get; private set; }
         public float exitTIme { get; private set; }
         private void Start()
         {
             enabled= false;
+            rootGameObj = transform.parent.gameObject;
         }
 
         public void Run()

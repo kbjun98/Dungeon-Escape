@@ -10,12 +10,11 @@ namespace LightWeightFSM
         public override void OnEnter()
         {
             base.OnEnter();
-            GetComponentInChildren<Animator>().SetTrigger("Idle");
+            rootGameObj.GetComponentInChildren<Animator>().SetFloat("Move", 0f);
         }
 
         private void LateUpdate()
         {
-            Debug.Log("Idle LateUpdate");
         }
     }
 
